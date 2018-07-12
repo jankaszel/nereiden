@@ -1,21 +1,22 @@
 package main
 
 import (
-	"log"
-
+	"fmt"
 	gin "github.com/gin-gonic/gin"
 	redis "github.com/go-redis/redis"
+	"log"
+	"strings"
 )
 
 func main() {
-	option, err := redis.ParseURL("redis://localhost:6379/0")
-	if err != nil {
-		panic(err)
-	}
+	args := getArgs()
+	options := redis.Options{
+		Addr: strings.Join([]string{args.redisHost, args.redisPort}, ":"),
+		DB:   0}
+	fmt.Printf("%+v\n", args)
+	client := redis.NewClient(&options)
 
-	client := redis.NewClient(option)
-
-	_, err = client.Ping().Result()
+	_, err := client.Ping().Result()
 	if err != nil {
 		panic(err)
 	}
@@ -25,6 +26,11 @@ func main() {
 	router.ForwardedByClientIP = true
 	router.Use(limiterMiddleware(client))
 
-	router.GET("/recreate", tokenMiddleware(client), perform)
-	log.Fatal(router.Run(":8090"))
+	router.GET(
+		"/recreate",
+		tokenMiddleware(client),
+		createHandler(args.registries))
+
+	log.Fatal(router.Run(
+		strings.Join([]string{":", args.httpPort}, "")))
 }
