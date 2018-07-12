@@ -28,3 +28,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/fallafeljan/docker-recreate"
+
+[[override]]
+  name = "github.com/docker/docker"
+  revision = "a422774e593b33bd287d9890544ad9e09b380d8c"
