@@ -3,11 +3,10 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"net/http"
-	"strings"
-
 	"github.com/gin-gonic/gin"
 	redis "github.com/go-redis/redis"
+	"net/http"
+	"strings"
 )
 
 const prefix string = "token"

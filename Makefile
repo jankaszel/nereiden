@@ -7,10 +7,15 @@ LDFLAGS=-ldflags "-X main.BuildTime=`date +%FT%T%z`"
 .DEFAULT_GOAL: $(BINARY)
 
 all: clean prebuild test build
+pure-build: clean test build
 
 .PHONY: prebuild
 prebuild: $(SOURCES)
 	dep ensure
+
+.PHONY: prebuild-ci
+prebuild-ci: $(SOURCES)
+	dep ensure -vendor-only
 
 .PHONY: build
 build: $(SOURCES)

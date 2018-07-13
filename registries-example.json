@@ -1,0 +1,7 @@
+[
+  {
+    "host": "registry.acme.corp",
+    "user": "john_doe",
+    "password": "secret"
+  }
+]
