@@ -49,3 +49,8 @@ func createToken(client *redis.Client, conf *TokenConf) (string, error) {
 
 	return token, nil
 }
+
+func revokeToken(client *redis.Client, token string) {
+	key := createTokenKey(token)
+	client.Del(key)
+}

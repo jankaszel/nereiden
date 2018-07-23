@@ -13,6 +13,7 @@ func createGraphQLHandler(args *Args, client *redis.Client) gin.HandlerFunc {
 		Fields: graphql.Fields{
 			"recreateContainer": createContainerRecreationMutation(args, client),
 			"createToken":       createTokenCreationMutation(client),
+			"revokeToken":       createTokenRevocationMutation(client),
 		},
 	})
 
