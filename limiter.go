@@ -10,7 +10,7 @@ import (
 )
 
 func limiterMiddleware(client *redis.Client) (middleware gin.HandlerFunc) {
-	rate, err := limiter.NewRateFromFormatted("1-S")
+	rate, err := limiter.NewRateFromFormatted("30-M")
 	if err != nil {
 		panic(err)
 	}
