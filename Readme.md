@@ -10,7 +10,7 @@ The only prerequisite to run the serive is Docker. To create the service:
 * If desired, assign an exposed port in the `docker-compose.yml` configuration. (By default, port 80 is used).
 * Launch the service via `docker-compose up -d`.
 
-Once the service is running, you may add tokens to the Redis configuration — which is a workaround until we implemented a HTTP API. Tokens are expected to have the key `token_<TOKEN>` and a value of a stringified JSON object with the fields `containerId` (ID or name) and `imageTag` (`latest`, for instance).
+Once the service is running, you may add tokens to the Redis configuration — which is a workaround until we implemented a HTTP API. Tokens are expected to have the key `token_<TOKEN>` and a value of a stringified JSON object with the fields `containerID` (ID or name) and `imageTag` (`latest`, for instance).
 
 Then, a recreation process is started by calling `/recreate?access_token=<TOKEN>`. The request is terminated once the recreation succeeded or failed.
 

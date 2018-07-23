@@ -8,7 +8,7 @@ import (
 )
 
 var recreationResponseType = graphql.NewObject(graphql.ObjectConfig{
-	Name: "RecreationResponse",
+	Name: "ContainerRecreationResponse",
 	Fields: graphql.Fields{
 		"previousContainerID": &graphql.Field{
 			Type:        graphql.NewNonNull(graphql.String),
@@ -46,7 +46,7 @@ func recreateContainer(args *Args, client *redis.Client, accessToken string) (*r
 	return recreation, nil
 }
 
-func createRecreateContainerMutation(args *Args, client *redis.Client) *graphql.Field {
+func createContainerRecreationMutation(args *Args, client *redis.Client) *graphql.Field {
 	return &graphql.Field{
 		Type: graphql.NewNonNull(recreationResponseType),
 		Args: graphql.FieldConfigArgument{

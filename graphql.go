@@ -11,7 +11,8 @@ func createGraphQLHandler(args *Args, client *redis.Client) gin.HandlerFunc {
 	rootMutation := graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
-			"recreateContainer": createRecreateContainerMutation(args, client),
+			"recreateContainer": createContainerRecreationMutation(args, client),
+			"createToken":       createTokenCreationMutation(client),
 		},
 	})
 
