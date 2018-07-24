@@ -2,11 +2,10 @@ package main
 
 import (
 	"errors"
-	redis "github.com/go-redis/redis"
 	"github.com/graphql-go/graphql"
 )
 
-func createTokenRevocationMutation(client *redis.Client) *graphql.Field {
+func createTokenRevocationMutation(tokenContext TokenContext) *graphql.Field {
 	return &graphql.Field{
 		Type: graphql.Boolean,
 		Args: graphql.FieldConfigArgument{
@@ -21,7 +20,7 @@ func createTokenRevocationMutation(client *redis.Client) *graphql.Field {
 				return nil, errors.New("`token` is expected to be a string")
 			}
 
-			revokeToken(client, token)
+			tokenContext.RevokeToken(token)
 			return true, nil
 		},
 	}

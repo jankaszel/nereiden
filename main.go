@@ -15,6 +15,7 @@ func main() {
 	}
 
 	client := redis.NewClient(&options)
+	tokenContext := NewTokenContext(client, args.redisPrefix)
 
 	_, err := client.Ping().Result()
 	if err != nil {
@@ -24,9 +25,9 @@ func main() {
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
-	router.Use(limiterMiddleware(args.rateLimit, client))
+	router.Use(limiterMiddleware(client, args.rateLimit))
 
-	router.POST("/graphql", createGraphQLHandler(args, client))
+	router.POST("/graphql", createGraphQLHandler(tokenContext, args))
 
 	log.Fatal(router.Run(
 		strings.Join([]string{":", args.httpPort}, "")))

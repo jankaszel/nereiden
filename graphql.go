@@ -2,18 +2,17 @@ package main
 
 import (
 	gin "github.com/gin-gonic/gin"
-	redis "github.com/go-redis/redis"
 	graphql "github.com/graphql-go/graphql"
 	handler "github.com/graphql-go/handler"
 )
 
-func createGraphQLHandler(args *Args, client *redis.Client) gin.HandlerFunc {
+func createGraphQLHandler(tokenContext TokenContext, args *Args) gin.HandlerFunc {
 	rootMutation := graphql.NewObject(graphql.ObjectConfig{
 		Name: "RootMutation",
 		Fields: graphql.Fields{
-			"recreateContainer": createContainerRecreationMutation(args, client),
-			"createToken":       createTokenCreationMutation(client),
-			"revokeToken":       createTokenRevocationMutation(client),
+			"recreateContainer": createContainerRecreationMutation(tokenContext, args.registries),
+			"createToken":       createTokenCreationMutation(tokenContext),
+			"revokeToken":       createTokenRevocationMutation(tokenContext),
 		},
 	})
 

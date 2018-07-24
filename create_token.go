@@ -2,11 +2,10 @@ package main
 
 import (
 	"errors"
-	redis "github.com/go-redis/redis"
 	"github.com/graphql-go/graphql"
 )
 
-func createTokenCreationMutation(client *redis.Client) *graphql.Field {
+func createTokenCreationMutation(tokenContext TokenContext) *graphql.Field {
 	return &graphql.Field{
 		Type: graphql.NewNonNull(graphql.String),
 		Args: graphql.FieldConfigArgument{
@@ -30,12 +29,12 @@ func createTokenCreationMutation(client *redis.Client) *graphql.Field {
 				return nil, errors.New("`imageTag` is expected to be a string")
 			}
 
-			conf := TokenConf{
+			grant := TokenGrant{
 				ContainerID: containerID,
 				ImageTag:    imageTag,
 			}
 
-			return createToken(client, &conf)
+			return tokenContext.CreateToken(&grant)
 		},
 	}
 }

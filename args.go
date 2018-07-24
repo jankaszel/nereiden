@@ -11,18 +11,20 @@ import (
 
 // Args describe arguments we expect from the environment
 type Args struct {
-	redisHost  string
-	redisPort  string
-	httpPort   string
-	rateLimit  string
-	registries []recreate.RegistryConf
+	httpPort    string
+	rateLimit   string
+	redisHost   string
+	redisPort   string
+	redisPrefix string
+	registries  []recreate.RegistryConf
 }
 
 var defaultSettings = Args{
-	redisHost: "127.0.0.1",
-	redisPort: "6379",
-	httpPort:  "80",
-	rateLimit: "30-M",
+	httpPort:    "80",
+	rateLimit:   "30-M",
+	redisHost:   "127.0.0.1",
+	redisPort:   "6379",
+	redisPrefix: "token",
 }
 
 func getRegistries() (registries []recreate.RegistryConf) {
@@ -58,11 +60,20 @@ func getRegistries() (registries []recreate.RegistryConf) {
 
 func getArgs() (args *Args) {
 	envArgs := Args{
-		redisHost:  os.Getenv("REDIS_HOST"),
-		redisPort:  os.Getenv("REDIS_PORT"),
-		httpPort:   os.Getenv("HTTP_PORT"),
-		rateLimit:  os.Getenv("RATE_LIMIT"),
-		registries: getRegistries(),
+		httpPort:    os.Getenv("HTTP_PORT"),
+		rateLimit:   os.Getenv("RATE_LIMIT"),
+		redisHost:   os.Getenv("REDIS_HOST"),
+		redisPort:   os.Getenv("REDIS_PORT"),
+		redisPrefix: os.Getenv("REDIS_PREFIX"),
+		registries:  getRegistries(),
+	}
+
+	if envArgs.httpPort == "" {
+		envArgs.httpPort = defaultSettings.httpPort
+	}
+
+	if envArgs.rateLimit == "" {
+		envArgs.rateLimit = defaultSettings.rateLimit
 	}
 
 	if envArgs.redisHost == "" {
@@ -73,12 +84,8 @@ func getArgs() (args *Args) {
 		envArgs.redisPort = defaultSettings.redisPort
 	}
 
-	if envArgs.httpPort == "" {
-		envArgs.httpPort = defaultSettings.httpPort
-	}
-
-	if envArgs.rateLimit == "" {
-		envArgs.rateLimit = defaultSettings.rateLimit
+	if envArgs.redisPrefix == "" {
+		envArgs.redisPrefix = defaultSettings.redisPrefix
 	}
 
 	return &envArgs

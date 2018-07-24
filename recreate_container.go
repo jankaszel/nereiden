@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	recreate "github.com/fallafeljan/docker-recreate/lib"
-	redis "github.com/go-redis/redis"
 	"github.com/graphql-go/graphql"
 )
 
@@ -21,8 +20,12 @@ var recreationResponseType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func recreateContainer(args *Args, client *redis.Client, accessToken string) (*recreate.Recreation, error) {
-	tokenConf, err := acquireConf(client, accessToken)
+func recreateContainer(
+	tokenContext TokenContext,
+	registries []recreate.RegistryConf,
+	accessToken string,
+) (*recreate.Recreation, error) {
+	tokenConf, err := tokenContext.GetGrant(accessToken)
 
 	if tokenConf.ContainerID == "" || tokenConf.ImageTag == "" {
 		return nil, errors.New("internal error")
@@ -31,7 +34,7 @@ func recreateContainer(args *Args, client *redis.Client, accessToken string) (*r
 	options := recreate.Options{
 		PullImage:       true,
 		DeleteContainer: true,
-		Registries:      args.registries}
+		Registries:      registries}
 
 	recreation, err := recreate.Recreate(
 		"unix:///var/run/docker.sock",
@@ -46,7 +49,7 @@ func recreateContainer(args *Args, client *redis.Client, accessToken string) (*r
 	return recreation, nil
 }
 
-func createContainerRecreationMutation(args *Args, client *redis.Client) *graphql.Field {
+func createContainerRecreationMutation(tokenContext TokenContext, registries []recreate.RegistryConf) *graphql.Field {
 	return &graphql.Field{
 		Type: graphql.NewNonNull(recreationResponseType),
 		Args: graphql.FieldConfigArgument{
@@ -61,7 +64,7 @@ func createContainerRecreationMutation(args *Args, client *redis.Client) *graphq
 				return nil, errors.New("`accessToken` is expected to be a string")
 			}
 
-			return recreateContainer(args, client, accessToken)
+			return recreateContainer(tokenContext, registries, accessToken)
 		},
 	}
 }
