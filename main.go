@@ -22,12 +22,17 @@ func main() {
 		panic(err)
 	}
 
+	if args.inProduction {
+		gin.SetMode("release")
+	}
+
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
 	router.Use(limiterMiddleware(client, args.rateLimit))
 
-	router.POST("/graphql", createGraphQLHandler(tokenContext, args))
+	group := createSecuredGroup(router, args.authUser, args.authPassword)
+	group.POST("/graphql", createGraphQLHandler(tokenContext, args))
 
 	log.Fatal(router.Run(
 		strings.Join([]string{":", args.httpPort}, "")))

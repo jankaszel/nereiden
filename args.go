@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/fallafeljan/docker-recreate/lib"
 	"io/ioutil"
 	"os"
@@ -11,20 +12,24 @@ import (
 
 // Args describe arguments we expect from the environment
 type Args struct {
-	httpPort    string
-	rateLimit   string
-	redisHost   string
-	redisPort   string
-	redisPrefix string
-	registries  []recreate.RegistryConf
+	authUser     string
+	authPassword string
+	httpPort     string
+	inProduction bool
+	rateLimit    string
+	redisHost    string
+	redisPort    string
+	redisPrefix  string
+	registries   []recreate.RegistryConf
 }
 
 var defaultSettings = Args{
-	httpPort:    "80",
-	rateLimit:   "30-M",
-	redisHost:   "127.0.0.1",
-	redisPort:   "6379",
-	redisPrefix: "token",
+	inProduction: false,
+	httpPort:     "80",
+	rateLimit:    "30-M",
+	redisHost:    "127.0.0.1",
+	redisPort:    "6379",
+	redisPrefix:  "token",
 }
 
 func getRegistries() (registries []recreate.RegistryConf) {
@@ -60,12 +65,21 @@ func getRegistries() (registries []recreate.RegistryConf) {
 
 func getArgs() (args *Args) {
 	envArgs := Args{
-		httpPort:    os.Getenv("HTTP_PORT"),
-		rateLimit:   os.Getenv("RATE_LIMIT"),
-		redisHost:   os.Getenv("REDIS_HOST"),
-		redisPort:   os.Getenv("REDIS_PORT"),
-		redisPrefix: os.Getenv("REDIS_PREFIX"),
-		registries:  getRegistries(),
+		authUser:     os.Getenv("AUTH_USER"),
+		authPassword: os.Getenv("AUTH_PASSWORD"),
+		inProduction: os.Getenv("PRODUCTION") == "true",
+		httpPort:     os.Getenv("HTTP_PORT"),
+		rateLimit:    os.Getenv("RATE_LIMIT"),
+		redisHost:    os.Getenv("REDIS_HOST"),
+		redisPort:    os.Getenv("REDIS_PORT"),
+		redisPrefix:  os.Getenv("REDIS_PREFIX"),
+		registries:   getRegistries(),
+	}
+
+	if envArgs.inProduction && (envArgs.authUser == "" || envArgs.authPassword == "") {
+		fmt.Println("IMPORTANT: When in production, you should secure the " +
+			"service by enforcing HTTP authentication (`AUTH_USER`, " +
+			"`AUTH_PASSWORD`). Please refer to the documentation.")
 	}
 
 	if envArgs.httpPort == "" {
