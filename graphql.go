@@ -41,9 +41,7 @@ func createGraphQLHandler(args *Args, client *redis.Client) gin.HandlerFunc {
 	}
 
 	h := handler.New(&handler.Config{
-		Schema:   &schema,
-		Pretty:   true,
-		GraphiQL: true,
+		Schema: &schema,
 	})
 
 	return func(c *gin.Context) {

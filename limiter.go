@@ -9,8 +9,8 @@ import (
 	sredis "github.com/ulule/limiter/drivers/store/redis"
 )
 
-func limiterMiddleware(client *redis.Client) (middleware gin.HandlerFunc) {
-	rate, err := limiter.NewRateFromFormatted("30-M")
+func limiterMiddleware(rateLimit string, client *redis.Client) (middleware gin.HandlerFunc) {
+	rate, err := limiter.NewRateFromFormatted(rateLimit)
 	if err != nil {
 		panic(err)
 	}

@@ -24,7 +24,7 @@ func main() {
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
-	router.Use(limiterMiddleware(client))
+	router.Use(limiterMiddleware(args.rateLimit, client))
 
 	router.POST("/graphql", createGraphQLHandler(args, client))
 
