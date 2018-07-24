@@ -1,7 +1,7 @@
 SOURCEDIR=.
 SOURCES := $(find $(SOURCEDIR) -name '*.go')
 
-BINARY=build/hesperiden
+BINARY=build/nereiden
 LDFLAGS=-ldflags "-X main.BuildTime=`date +%FT%T%z`"
 
 .DEFAULT_GOAL: $(BINARY)
