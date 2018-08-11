@@ -9,17 +9,17 @@ import (
 func main() {
 	args := getArgs()
 
-	if args.inProduction {
+	if args.InProduction {
 		gin.SetMode("release")
 	}
 
 	router := gin.Default()
 
 	router.ForwardedByClientIP = true
-	router.Use(limiterMiddleware(args.rateLimit))
+	router.Use(limiterMiddleware(args.RateLimit))
 
-	router.POST("/graphql", createGraphQLHandler(args.letsEncryptEmail))
+	router.POST("/graphql", createGraphQLHandler(args.LetsEncryptEmail))
 
 	log.Fatal(router.Run(
-		strings.Join([]string{":", args.httpPort}, "")))
+		strings.Join([]string{":", args.HTTPPort}, "")))
 }
