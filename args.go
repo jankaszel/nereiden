@@ -1,17 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"os"
 )
 
 // Args describe arguments we expect from the environment
 type Args struct {
-	authUser     string
-	authPassword string
-	httpPort     string
-	inProduction bool
-	rateLimit    string
+	httpPort         string
+	inProduction     bool
+	letsEncryptEmail string
+	rateLimit        string
 }
 
 var defaultSettings = Args{
@@ -22,17 +20,15 @@ var defaultSettings = Args{
 
 func getArgs() (args *Args) {
 	envArgs := Args{
-		authUser:     os.Getenv("AUTH_USER"),
-		authPassword: os.Getenv("AUTH_PASSWORD"),
-		inProduction: os.Getenv("PRODUCTION") == "true",
-		httpPort:     os.Getenv("HTTP_PORT"),
-		rateLimit:    os.Getenv("RATE_LIMIT"),
+		httpPort:         os.Getenv("HTTP_PORT"),
+		inProduction:     os.Getenv("PRODUCTION") == "true",
+		letsEncryptEmail: os.Getenv("LETS_ENCRYPT_EMAIL"),
+		rateLimit:        os.Getenv("RATE_LIMIT"),
 	}
 
-	if envArgs.inProduction && (envArgs.authUser == "" || envArgs.authPassword == "") {
-		fmt.Println("IMPORTANT: When in production, you should secure the " +
-			"service by enforcing HTTP authentication (`AUTH_USER`, " +
-			"`AUTH_PASSWORD`). Please refer to the documentation.")
+	if envArgs.letsEncryptEmail == "" {
+		panic("You must specify an email address in order to obtain certificates " +
+			"from Let's Encrypt. Please refer to the documentation.")
 	}
 
 	if envArgs.httpPort == "" {

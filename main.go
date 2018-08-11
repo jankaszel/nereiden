@@ -18,8 +18,7 @@ func main() {
 	router.ForwardedByClientIP = true
 	router.Use(limiterMiddleware(args.rateLimit))
 
-	group := createSecuredGroup(router, args.authUser, args.authPassword)
-	group.POST("/graphql", createGraphQLHandler())
+	router.POST("/graphql", createGraphQLHandler(args.letsEncryptEmail))
 
 	log.Fatal(router.Run(
 		strings.Join([]string{":", args.httpPort}, "")))

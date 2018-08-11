@@ -30,8 +30,8 @@
   unused-packages = true
 
 [[constraint]]
-  branch = "master"
   name = "github.com/fallafeljan/docker-recreate"
+  version = "1.0.0"
 
 [[override]]
   name = "github.com/docker/docker"
