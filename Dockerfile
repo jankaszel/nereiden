@@ -13,4 +13,7 @@ RUN make prebuild-ci
 COPY *.go ./
 RUN make pure-build
 
+EXPOSE 80
+ENV PRODUCTION=true
+
 CMD ["./build/nereiden"]
