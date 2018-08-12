@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/falafeljan/docker-recreate"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/graphql-go/graphql"
@@ -35,6 +36,22 @@ func assignContainerHostname(
 	client, err := docker.NewClient("unix:///var/run/docker.sock")
 	if err != nil {
 		return nil, err
+	}
+
+	container, err := client.InspectContainer(containerID)
+	if err != nil {
+		return nil, err
+	}
+
+	assignedContainer, err := hostnameAssigned(client, hostname)
+	if err != nil {
+		return nil, err
+	} else if assignedContainer != nil && assignedContainer.ID != container.ID {
+		return nil, fmt.Errorf(
+			"Hostname `%s` is already assigned to container `%s`",
+			hostname,
+			assignedContainer.ID[:8],
+		)
 	}
 
 	context := recreate.NewContextWithClient(options, client)
