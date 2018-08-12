@@ -98,12 +98,12 @@
   version = "v0.3.3"
 
 [[projects]]
-  digest = "1:143dde0a0b3427af9336afe453e49bef0cf7da16d697185b54314b1ceb9c0cdd"
-  name = "github.com/fallafeljan/docker-recreate"
+  digest = "1:7da340162fc72605d15219c51e1beb6fd19bf4731035ea6d3313e0b0d5648109"
+  name = "github.com/falafeljan/docker-recreate"
   packages = ["."]
   pruneopts = "UT"
-  revision = "3d6ca7cc398f86e1bf34b552fab75d7864a0ad9d"
-  version = "v1.0.0"
+  revision = "d1fdbfb7a213c5686d37485bb58c9a6cc215479b"
+  version = "v1.0.1"
 
 [[projects]]
   digest = "1:027133e2c23fd4ff467e66d928ab4a64f7fd7cb2f77acdb580c483f7389d22d7"
@@ -321,7 +321,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/caarlos0/env",
-    "github.com/fallafeljan/docker-recreate",
+    "github.com/falafeljan/docker-recreate",
     "github.com/fsouza/go-dockerclient",
     "github.com/gin-gonic/gin",
     "github.com/graphql-go/graphql",
