@@ -2,46 +2,29 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"github.com/caarlos0/env"
 )
 
 // Args describe arguments we expect from the environment
 type Args struct {
-	authUser     string
-	authPassword string
-	httpPort     string
-	inProduction bool
-	rateLimit    string
+	HTTPPort         string `env:"HTTP_PORT" envDefault:"80"`
+	InProduction     bool   `env:"PRODUCTION" envDefault:"false"`
+	LetsEncryptEmail string `env:"LETS_ENCRYPT_EMAIL"`
+	RateLimit        string `env:"RATE_LIMIT" envDefault:"30-M"`
 }
 
-var defaultSettings = Args{
-	inProduction: false,
-	httpPort:     "80",
-	rateLimit:    "30-M",
-}
+func getArgs() Args {
+	args := Args{}
+	err := env.Parse(&args)
 
-func getArgs() (args *Args) {
-	envArgs := Args{
-		authUser:     os.Getenv("AUTH_USER"),
-		authPassword: os.Getenv("AUTH_PASSWORD"),
-		inProduction: os.Getenv("PRODUCTION") == "true",
-		httpPort:     os.Getenv("HTTP_PORT"),
-		rateLimit:    os.Getenv("RATE_LIMIT"),
+	if err != nil {
+		panic(fmt.Sprintf("Error while parsing configuration: %+v\n", err))
 	}
 
-	if envArgs.inProduction && (envArgs.authUser == "" || envArgs.authPassword == "") {
-		fmt.Println("IMPORTANT: When in production, you should secure the " +
-			"service by enforcing HTTP authentication (`AUTH_USER`, " +
-			"`AUTH_PASSWORD`). Please refer to the documentation.")
+	if args.LetsEncryptEmail == "" {
+		panic("You must specify an email address in order to obtain certificates " +
+			"from Let's Encrypt. Please refer to the documentation.")
 	}
 
-	if envArgs.httpPort == "" {
-		envArgs.httpPort = defaultSettings.httpPort
-	}
-
-	if envArgs.rateLimit == "" {
-		envArgs.rateLimit = defaultSettings.rateLimit
-	}
-
-	return &envArgs
+	return args
 }

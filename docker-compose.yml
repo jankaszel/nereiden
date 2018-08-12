@@ -3,8 +3,6 @@ services:
   app:
     build: .
     environment:
-      - HTTP_PORT=80
-    expose:
-      - "80"
+      - "LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

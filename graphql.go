@@ -6,10 +6,12 @@ import (
 	handler "github.com/graphql-go/handler"
 )
 
-func createGraphQLHandler() gin.HandlerFunc {
+func createGraphQLHandler(letsEncryptEmail string) gin.HandlerFunc {
 	rootMutation := graphql.NewObject(graphql.ObjectConfig{
-		Name:   "RootMutation",
-		Fields: graphql.Fields{},
+		Name: "RootMutation",
+		Fields: graphql.Fields{
+			"assignHostname": createHostnameAssignmentMutation(letsEncryptEmail),
+		},
 	})
 
 	fields := graphql.Fields{
