@@ -25,6 +25,6 @@ func getArgs() Args {
 		panic("You must specify an email address in order to obtain certificates " +
 			"from Let's Encrypt. Please refer to the documentation.")
 	}
-	fmt.Println(args.RateLimit)
+
 	return args
 }
