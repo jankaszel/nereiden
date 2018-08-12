@@ -5,14 +5,20 @@ import (
 	"strings"
 )
 
-func environmentContainsHostname(variables []string, hostname string) bool {
+func environmentContainsHostname(variables []string, hostnames []string) bool {
 	for _, variable := range variables {
 		res := strings.SplitN(variable, "=", 2)
 
 		if len(res) < 2 {
 			continue
-		} else if (res[0] == "VIRTUAL_HOST" || res[0] == "LETSENCRYPT_HOST") && res[1] == hostname {
-			return true
+		} else if res[0] == "VIRTUAL_HOST" || res[0] == "LETSENCRYPT_HOST" {
+			for _, hostname := range hostnames {
+				for _, assignedHostname := range strings.Split(res[1], ",") {
+					if hostname == assignedHostname {
+						return true
+					}
+				}
+			}
 		}
 	}
 
@@ -20,6 +26,7 @@ func environmentContainsHostname(variables []string, hostname string) bool {
 }
 
 func hostnameAssigned(client *docker.Client, hostname string) (assignedContainer *docker.Container, err error) {
+	hostnames := strings.Split(hostname, ",")
 	containers, err := client.ListContainers(docker.ListContainersOptions{All: true})
 	if err != nil {
 		return nil, err
@@ -31,7 +38,7 @@ func hostnameAssigned(client *docker.Client, hostname string) (assignedContainer
 			return nil, err
 		}
 
-		if environmentContainsHostname(container.Config.Env, hostname) {
+		if environmentContainsHostname(container.Config.Env, hostnames) {
 			return container, nil
 		}
 	}
