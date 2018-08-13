@@ -1,14 +1,11 @@
 package main
 
 import (
-	"github.com/falafeljan/gin-simple-token-middleware"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-
 	"fmt"
+	"github.com/falafeljan/gin-simple-token-middleware"
+	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -28,14 +25,7 @@ func main() {
 		"For more information, please refer to the documentation.\n\n", token)
 
 	router := gin.Default()
-
-	router.Use(cors.New(cors.Config{
-		AllowOrigins: args.AllowedOrigins,
-		AllowHeaders: []string{"Authorization"},
-		MaxAge:       12 * time.Hour,
-	}))
-
-	router.ForwardedByClientIP = true
+	router.Use(createCORSMiddleware(args.AllowedOrigins))
 	router.Use(limiterMiddleware(args.RateLimit))
 
 	group := router.Group("/", tokenmiddleware.NewHandler(token))
