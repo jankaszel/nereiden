@@ -15,7 +15,7 @@ prebuild: $(SOURCES)
 
 .PHONY: prebuild-ci
 prebuild-ci: $(SOURCES)
-	dep ensure -vendor-only
+	dep ensure -v -vendor-only
 
 .PHONY: build
 build: $(SOURCES)
