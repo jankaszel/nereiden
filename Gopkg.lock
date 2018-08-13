@@ -106,12 +106,12 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:9b142e01eb996f1fd03b033ae63f2dc320dabd883ae9430693add9099f71292c"
+  digest = "1:cc719ce0ccf8ae2bb50882dbc41001268c173130fc96f0647757ec51b005f950"
   name = "github.com/falafeljan/gin-simple-token-middleware"
   packages = ["."]
   pruneopts = "UT"
-  revision = "df7b57a6982d22ebd31ebcb533f0a773944557fa"
-  version = "v0.1.0"
+  revision = "fca0bc18157bf5c32976c0b9533101e2e0f380b3"
+  version = "v0.1.1"
 
 [[projects]]
   digest = "1:027133e2c23fd4ff467e66d928ab4a64f7fd7cb2f77acdb580c483f7389d22d7"
