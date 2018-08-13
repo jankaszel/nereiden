@@ -7,10 +7,11 @@ import (
 
 // Args describe arguments we expect from the environment
 type Args struct {
-	HTTPPort         string `env:"HTTP_PORT" envDefault:"80"`
-	InProduction     bool   `env:"PRODUCTION" envDefault:"false"`
-	LetsEncryptEmail string `env:"LETS_ENCRYPT_EMAIL"`
-	RateLimit        string `env:"RATE_LIMIT" envDefault:"30-M"`
+	AllowedOrigins   []string `env:"ALLOWED_ORIGINS" envSeparator:"," envDefault:"*"`
+	HTTPPort         string   `env:"HTTP_PORT" envDefault:"80"`
+	InProduction     bool     `env:"PRODUCTION" envDefault:"false"`
+	LetsEncryptEmail string   `env:"LETS_ENCRYPT_EMAIL"`
+	RateLimit        string   `env:"RATE_LIMIT" envDefault:"30-M"`
 }
 
 func getArgs() Args {

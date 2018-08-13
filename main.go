@@ -1,11 +1,14 @@
 package main
 
 import (
-	gin "github.com/gin-gonic/gin"
+	"github.com/falafeljan/gin-simple-token-middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 
 	"fmt"
 	"log"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -26,10 +29,16 @@ func main() {
 
 	router := gin.Default()
 
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: args.AllowedOrigins,
+		AllowHeaders: []string{"Authorization"},
+		MaxAge:       12 * time.Hour,
+	}))
+
 	router.ForwardedByClientIP = true
 	router.Use(limiterMiddleware(args.RateLimit))
 
-	group := router.Group("/", requireToken(token))
+	group := router.Group("/", tokenmiddleware.NewHandler(token))
 	group.POST("/graphql", createGraphQLHandler(args.LetsEncryptEmail))
 
 	log.Fatal(router.Run(
