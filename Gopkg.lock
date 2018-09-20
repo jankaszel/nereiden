@@ -98,12 +98,12 @@
   version = "v0.3.3"
 
 [[projects]]
-  digest = "1:7da340162fc72605d15219c51e1beb6fd19bf4731035ea6d3313e0b0d5648109"
+  digest = "1:119ae215757e5e1d0a283ec2e393984bbd4d46c7e41e52615bd320efc9840a35"
   name = "github.com/falafeljan/docker-recreate"
   packages = ["."]
   pruneopts = "UT"
-  revision = "d1fdbfb7a213c5686d37485bb58c9a6cc215479b"
-  version = "v1.0.1"
+  revision = "ef09f2183223d2bd899061427bc00f41e3e01253"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:cc719ce0ccf8ae2bb50882dbc41001268c173130fc96f0647757ec51b005f950"

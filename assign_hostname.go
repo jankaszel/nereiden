@@ -74,12 +74,18 @@ func assignContainerHostname(
 		return nil, err
 	}
 
-	err = client.ConnectNetwork(proxyNetworkName, docker.NetworkConnectionOptions{
-		Container: recreation.NewContainerID,
-	})
-
+	newContainer, err := client.InspectContainer(recreation.NewContainerID)
 	if err != nil {
 		return nil, err
+	}
+
+	if _, ok := newContainer.NetworkSettings.Networks[proxyNetworkName]; !ok {
+		err = client.ConnectNetwork(proxyNetworkName, docker.NetworkConnectionOptions{
+			Container: recreation.NewContainerID,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return recreation, nil
