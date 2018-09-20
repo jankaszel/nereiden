@@ -11,6 +11,7 @@ type Args struct {
 	HTTPPort         string   `env:"HTTP_PORT" envDefault:"80"`
 	InProduction     bool     `env:"PRODUCTION" envDefault:"false"`
 	LetsEncryptEmail string   `env:"LETS_ENCRYPT_EMAIL"`
+	ProxyNetworkName string   `env:"PROXY_NETWORK_NAME" envDefault:"nginx-proxy"`
 	RateLimit        string   `env:"RATE_LIMIT" envDefault:"30-M"`
 }
 

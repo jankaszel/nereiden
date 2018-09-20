@@ -29,7 +29,10 @@ func main() {
 	router.Use(limiterMiddleware(args.RateLimit))
 
 	group := router.Group("/", tokenmiddleware.NewHandler(token))
-	group.POST("/graphql", createGraphQLHandler(args.LetsEncryptEmail))
+	group.POST("/graphql", createGraphQLHandler(
+		args.ProxyNetworkName,
+		args.LetsEncryptEmail,
+	))
 
 	log.Fatal(router.Run(
 		strings.Join([]string{":", args.HTTPPort}, "")))
