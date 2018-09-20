@@ -25,6 +25,7 @@ var recreationResponseType = graphql.NewObject(graphql.ObjectConfig{
 func assignContainerHostname(
 	containerID string,
 	hostname string,
+	proxyNetworkName string,
 	letsEncryptEmail string,
 ) (*recreate.Recreation, error) {
 	options := recreate.DockerOptions{
@@ -73,18 +74,27 @@ func assignContainerHostname(
 		return nil, err
 	}
 
-	err = client.ConnectNetwork("nginx-proxy", docker.NetworkConnectionOptions{
-		Container: recreation.NewContainerID,
-	})
-
+	newContainer, err := client.InspectContainer(recreation.NewContainerID)
 	if err != nil {
 		return nil, err
+	}
+
+	if _, ok := newContainer.NetworkSettings.Networks[proxyNetworkName]; !ok {
+		err = client.ConnectNetwork(proxyNetworkName, docker.NetworkConnectionOptions{
+			Container: recreation.NewContainerID,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return recreation, nil
 }
 
-func createHostnameAssignmentMutation(letsEncryptEmail string) *graphql.Field {
+func createHostnameAssignmentMutation(
+	proxyNetworkName string,
+	letsEncryptEmail string,
+) *graphql.Field {
 	return &graphql.Field{
 		Type: graphql.NewNonNull(recreationResponseType),
 		Args: graphql.FieldConfigArgument{
@@ -108,7 +118,12 @@ func createHostnameAssignmentMutation(letsEncryptEmail string) *graphql.Field {
 				return nil, errors.New("`hostname` is expected to be a string")
 			}
 
-			return assignContainerHostname(containerID, hostname, letsEncryptEmail)
+			return assignContainerHostname(
+				containerID,
+				hostname,
+				proxyNetworkName,
+				letsEncryptEmail,
+			)
 		},
 	}
 }
